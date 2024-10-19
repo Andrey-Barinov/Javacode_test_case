@@ -57,12 +57,13 @@ django-wait-for-db = "^1.0.6"
 ## Установка:
 
 **Docker-контейнер:**
-
+cd Javacode_test_case/
 1. Необходимо иметь установленный Docker и Docker compose
 2. Клонировать репозиторий: **`git clone git@github.com:Andrey-Barinov/Javacode_test_case.git`**
-3. Собрать Docker compose образ: **`docker compose build`**
-4. Запустить сервер: **`docker compose up`**
-5. Зайти в браузер и перейти по адресу **`http://localhost:8000`**
+3. Перейти в директорию:  **`cd Javacode_test_case/`**
+4. Собрать Docker compose образ: **`docker compose build`**
+5. Запустить сервер: **`docker compose up`**
+6. Зайти в браузер и перейти по адресу **`http://localhost:8000`**
 
 **Примечание:**
 Нахождение файла .env в репозитории носит чисто ознакомительный характер. Файл .env и секретные данные не должны храниться в публичном доступе.
