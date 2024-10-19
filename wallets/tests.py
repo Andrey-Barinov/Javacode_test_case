@@ -9,6 +9,11 @@ class WalletAPITests(APITestCase):
     def setUp(self):
         self.new_wallet1 = Wallet.objects.create(balance=2000)
 
+        self.url_for_wallet_operation = reverse_lazy(
+            'wallets:operation',
+            kwargs={'pk': self.new_wallet1.uuid}
+        )
+
     def test_wallet_create_with_right_value(self):
         url = reverse_lazy('wallets:create')
         response = self.client.post(url, {'balance': 1000}, format='json')
@@ -64,12 +69,8 @@ class WalletAPITests(APITestCase):
         self.assertEqual(response.data['balance'], 3000)
 
     def test_wallet_withdraw_operation(self):
-        url = reverse_lazy(
-            'wallets:operation',
-            kwargs={'pk': self.new_wallet1.uuid}
-        )
         response = self.client.post(
-            url,
+            self.url_for_wallet_operation,
             {"operationType": "WITHDRAW", 'amount': 1000},
             format='json'
         )
@@ -79,12 +80,8 @@ class WalletAPITests(APITestCase):
         self.assertEqual(response.data['balance'], 1000)
 
     def wallet_withdraw_operation_in_case_of_insufficient_funds(self):
-        url = reverse_lazy(
-            'wallets:operation',
-            kwargs={'pk': self.new_wallet1.uuid}
-        )
         response = self.client.post(
-            url,
+            self.url_for_wallet_operation,
             {"operationType": "WITHDRAW", 'amount': 10000},
             format='json'
         )
@@ -93,13 +90,9 @@ class WalletAPITests(APITestCase):
         self.assertEqual(response.data['error'], 'Insufficient funds')
 
     def test_wallet_operation_with_invalid_JSON(self):
-        url = reverse_lazy(
-            'wallets:operation',
-            kwargs={'pk': self.new_wallet1.uuid}
-        )
         invalid_JSON = "{'operationType': 'DEPOSIT', 'amount: 100}"
         response = self.client.post(
-            url,
+            self.url_for_wallet_operation,
             data=invalid_JSON,
             content_type='application/json'
         )
@@ -108,12 +101,8 @@ class WalletAPITests(APITestCase):
         self.assertEqual(response.data['error'], 'Invalid JSON format')
 
     def test_wallet_operation_with_wrong_operation_type(self):
-        url = reverse_lazy(
-            'wallets:operation',
-            kwargs={'pk': self.new_wallet1.uuid}
-        )
         response = self.client.post(
-            url,
+            self.url_for_wallet_operation,
             {"operationType": "WRONG OPERATION!", 'amount': 1000},
             format='json'
         )
@@ -122,12 +111,8 @@ class WalletAPITests(APITestCase):
         self.assertEqual(response.data['error'], 'Invalid operation type')
 
     def test_wallet_operation_with_invalid_amount(self):
-        url = reverse_lazy(
-            'wallets:operation',
-            kwargs={'pk': self.new_wallet1.uuid}
-        )
         response = self.client.post(
-            url,
+            self.url_for_wallet_operation,
             {"operationType": "DEPOSIT", 'amount': 'wrong!'},
             format='json'
         )
